@@ -14,8 +14,10 @@
 #include <stdbool.h>
 #include <math.h>
 
-int prime[1000] = {0}; //used to store the prime
+#define NUM 5
 
+int prime[1000] = {0}; //used to store the prime
+int all = 0;
 
 // output the prime composition of n
 int find_out_the_prime_composition(int n)
@@ -45,7 +47,7 @@ bool is_prime(int n)
 			return false;
 		}
 	}
-
+	//printf("%d is prime\n", n);
 	return true;
 }
 
@@ -60,10 +62,11 @@ int find_out_prime(int n)
 			continue;
 		prime[k] = i;
 		k++;
-
 	}
+	all = k - 1;
 
 	// output all the prime found
+	printf("all the %d prime number between 2 and %d:\n", all, n);
 	for (size_t i = 0; prime[i] && i < 1000; i++)
 	{
 		printf("%d ", prime[i]);
@@ -83,22 +86,29 @@ int find_out_prime(int n)
 bool is_match(int *p, int number)
 {
 	int* r;
+	int tmp = 0;
 
 	r = (int *)malloc(number*sizeof(int));  // 10^r = pn
 
 	for (size_t i = 0; i < number; i++)
 	{
-		r[i] = (int)log10(p[i]);
+		r[i] = (int)log10(p[i]) + 1;
 	}
 
 	for (size_t i = 0; i < number; i++)
 	{
 		for (size_t j = 0; j < number; j++)
 		{
-			if (i = j)
+			if (i == j)
 				continue;
-			free(r);
-			return is_prime(p[i] + p[j] * pow(10, r[j]));
+			//printf("p[%d] = %d  p[%d] = %d  r[%d] = %d  number = %d\n", i, p[i], j, p[j], j, r[i], number);
+			tmp = p[i] + p[j] * pow(10, r[i]);
+			//printf("tmp is %d\n", tmp);
+			if (!is_prime(tmp))
+			{
+				free(r);
+				return false;
+			}
 		}
 	}
 
@@ -106,7 +116,18 @@ bool is_match(int *p, int number)
 	return true;
 }
 
+int print_result(int* arr, int n)
+{
+	int sum = 0;
+	for (size_t i = 0; i < n; i++)
+	{
+		printf("%d ", arr[i]);
+		sum += arr[i];
+	}
+	printf("\nSum of them is : %d\n\n", sum);
 
+	return 0;
+}
 
 int main(int argc, char** argv)
 {
@@ -123,16 +144,48 @@ int main(int argc, char** argv)
 	else
 		printf("%d is not prime\n", n);
 
-	printf("all the prime number between 2 and %d:\n", n);
 	find_out_prime(n);
 
-	int tmp[4] = {3, 7, 109, 673};
+	int tmp[NUM] = { 0 };
 
-	if(is_match(tmp, 4))
+
+	for (size_t i = 0; i < all; i++)
+	{
+		tmp[0] = prime[i];
+		for (size_t j = i+1; j < all; j++)
+		{
+			tmp[1] = prime[j];
+			for (size_t k = j+1; k < all; k++)
+			{
+				tmp[2] = prime[k];
+				for (size_t l = k+1; l < all; l++)
+				{
+					tmp[3] = prime[l];
+					for (size_t q = l + 1; q < all; q++)
+					{
+						tmp[4] = prime[q];
+						if (is_match(tmp, NUM))
+						{
+							printf("matched!\n");
+							print_result(tmp, NUM);
+							return 0;
+						}
+						else
+						{
+							//printf("not matcted\n");
+						}
+					}
+				}
+			}
+		}
+	}
+
+/*
+	if(is_match(tmp, NUM))
 		printf("is match\n");
 	else
 		printf("is not match\n");
-
+*/
 
 	return 0;
 }
