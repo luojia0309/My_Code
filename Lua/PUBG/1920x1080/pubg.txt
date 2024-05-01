@@ -1,0 +1,6 @@
+indexWeapon1 = ump
+indexWeapon2 = k2
+
+ztyq=0
+default
+2024年2月7日22时48分43秒
